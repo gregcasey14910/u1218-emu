@@ -119,7 +119,7 @@ class CpuDrawerPanel(FrontPanel):
 
         self.build_tag()
         self.register_pair(("AU", "AL"), LIGHT)
-        self.register_pair(("Q", "X"), DARK)
+        self.register_pair(("D", "X"), DARK)
         self.build_sequence()
         self.build_latch()
         self.register_pair(("S", "P"), DARK)
@@ -216,7 +216,7 @@ class CpuDrawerPanel(FrontPanel):
         box = tk.Frame(self.section(DARK), background=DARK, pady=1)
         box.pack()
         columns = 1 + FUNCTION_BITS + 1
-        Bracket(box, width=(columns - 1) * PITCH + 10, text="U", background=DARK).grid(
+        Bracket(box, width=(columns - 1) * PITCH + 10, text="F", background=DARK).grid(
             row=0, column=0, columnspan=columns - 1, sticky=tk.W)
         self.text(box, "FORMAT II", DARK).grid(row=1, column=0)
         Bracket(box, width=FUNCTION_BITS * PITCH, text="FUNCTION CODE", background=DARK).grid(

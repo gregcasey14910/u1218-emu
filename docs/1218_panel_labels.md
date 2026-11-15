@@ -23,13 +23,13 @@ pushbutton at top right (*clear*?).
 |---|---|---|
 | top left | A? (*AU*) | 17-0 |
 | top right | A? (*AL*) | 17-0 |
-| middle left | ? (looks like Q or O) | 17-0 |
-| middle right | ? (looks like X or Z) | 17-0 |
+| middle left | ? (looks like D; PX 2910: D arithmetic exchange register) | 17-0 |
+| middle right | X (PX 2910: exchange register) | 17-0 |
 | lower left | ? (looks like S) | 14-0 |
 | lower right | ? (looks like P) | 14-0 |
 
 - SEQUENCE: I, B?, R?, W, SQ?, HC?, RW, WAIT
-- U (bracket): FORMAT II lamp + FUNCTION CODE lamps (6) + white button
+- F (bracket, read as U before; PX 2910: 7-bit function register): FORMAT II lamp + FUNCTION CODE lamps (6) + white button
 - MODE: ? (*OPER STEP*?), PHASE STEP, SEQ STEP, ? (4 lamps)
 - PHASE: 4 lamps + white button
 - Switches, row 1: I/O CLEAR / CLEAR · ? / PHASE REPEAT · SEQ STOP / ? · RESTART / STEP
@@ -38,7 +38,7 @@ pushbutton at top right (*clear*?).
 
 ## Left drawer — I/O
 
-- Two 18-bit registers, labels C? with subscripts (17-0)
+- Two 18-bit registers, C_O and C_E: output buffers for odd and even channels (PX 2910 3.5.2)
 - ID ACKNOWLEDGE 7-0 (input data) · EF/OD ACKNOWLEDGE 7-0
 - EF/OD: EF · ACTIVE: ID OD EF · MONITOR: ID OD EF
 - CHANNEL PRIORITY 7-0

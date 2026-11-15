@@ -1,5 +1,3 @@
-import tkinter as tk
-
 import pytest
 
 from u1218.cpu import CPU, REGISTERS
@@ -17,16 +15,11 @@ def test_cpu_register_widths_and_accumulator():
 
 
 @pytest.fixture
-def panel():
-    try:
-        root = tk.Tk()
-    except tk.TclError:
-        pytest.skip("no display")
-    root.withdraw()
+def panel(tk_root):
     cpu = CPU()
-    p = CpuDrawerPanel(root, lambda: cpu)
+    p = CpuDrawerPanel(tk_root, lambda: cpu)
     yield p, cpu
-    root.destroy()
+    p.close()
 
 
 def test_every_register_has_a_lamp_per_bit(panel):

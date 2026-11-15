@@ -1,4 +1,7 @@
-import sys, cv2, numpy as np
+import sys
+
+import cv2
+
 src, out = sys.argv[1], sys.argv[2]
 img = cv2.imread(src)
 up = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_LANCZOS4)
