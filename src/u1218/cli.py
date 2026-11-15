@@ -10,8 +10,13 @@ from . import __version__
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="u1218", description="UNIVAC 1218 emulator")
     parser.add_argument("--version", action="version", version=f"u1218 {__version__}")
-    parser.parse_args(argv)
-    print("UNIVAC 1218 emulator: scaffold only (CPU, panel and BASIC to come).")
+    parser.add_argument("--panel", action="store_true", help="open the CPU drawer panel")
+    args = parser.parse_args(argv)
+    if args.panel:
+        from .panel import main as panel_main
+        panel_main()
+        return 0
+    print("UNIVAC 1218 emulator: CPU and BASIC to come; try --panel.")
     return 0
 
 

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import tkinter as tk
+from collections.abc import Callable
 from tkinter import ttk
-from typing import Callable
 
 
 def default_background(widget: tk.Misc) -> str:
@@ -239,7 +239,7 @@ class Knob(tk.Canvas):
 
     def _draw(self) -> None:
         self.delete("all")
-        s, c = self.size, self.size / 2
+        c = self.size / 2
         rim = c - 2                       # outer radius
         face = rim * 0.80                 # dark face radius
         self.create_oval(c - rim, c - rim, c + rim, c + rim, fill="#f1e7cc",
@@ -333,3 +333,100 @@ class ThreeWaySwitch(tk.Canvas):
         self.create_line(cx, cy, tip_x, tip_y, width=5, fill="#d8d8d8", capstyle=tk.ROUND)
         self.create_oval(tip_x - 4, tip_y - 4, tip_x + 4, tip_y + 4, fill="#f2f2f2",
                          outline="#777777")
+
+
+class DomeLamp(tk.Canvas):
+    """A 1218-style indicator: an amber glass dome, dark brown when off.
+
+    With ``command`` it is also a push-button (the 1218 panel allows manual
+    alteration of every register by pressing its bit lamps).
+    """
+
+    LIT = ("#ffb22e", "#ffe2a0")       # body, highlight
+    DARK = ("#6b3a12", "#a8662e")
+
+    def __init__(self, parent: tk.Misc, size: int = 22, background: str = "#3e4452",
+                 command: Callable[[], None] | None = None) -> None:
+        super().__init__(parent, width=size, height=size, highlightthickness=0,
+                         background=background, cursor="hand2" if command else "arrow")
+        self.size = size
+        self.command = command
+        self.lit = False
+        self.test = False
+        self._shown: bool | None = None
+        if command:
+            self.bind("<Button-1>", lambda _e: command())
+        self._draw()
+
+    def set(self, lit: bool) -> None:
+        self.lit = lit
+        self._draw()
+
+    def set_test(self, on: bool) -> None:
+        self.test = on
+        self._draw()
+
+    def _draw(self) -> None:
+        shown = self.lit or self.test
+        if shown == self._shown:
+            return
+        self._shown = shown
+        self.delete("all")
+        s = self.size
+        body, shine = self.LIT if shown else self.DARK
+        self.create_oval(1, 1, s - 1, s - 1, fill="#111111", outline="#000000")      # bezel
+        self.create_oval(3, 3, s - 3, s - 3, fill=body, outline="")                  # dome
+        self.create_oval(s * 0.30, s * 0.22, s * 0.52, s * 0.42, fill=shine, outline="")
+
+
+class CapButton(tk.Canvas):
+    """A momentary push-button with a round cream-white cap (register CLEAR etc.)."""
+
+    def __init__(self, parent: tk.Misc, size: int = 22, background: str = "#3e4452",
+                 command: Callable[[], None] | None = None) -> None:
+        super().__init__(parent, width=size, height=size, highlightthickness=0,
+                         background=background, cursor="hand2" if command else "arrow")
+        self.size = size
+        self.command = command
+        self._pressed = False
+        self.bind("<ButtonPress-1>", self._press)
+        self.bind("<ButtonRelease-1>", self._release)
+        self._draw()
+
+    def _press(self, _event=None) -> None:
+        self._pressed = True
+        self._draw()
+
+    def _release(self, _event=None) -> None:
+        self._pressed = False
+        self._draw()
+        if self.command:
+            self.command()
+
+    def _draw(self) -> None:
+        self.delete("all")
+        s = self.size
+        inset = 4 if self._pressed else 3
+        self.create_oval(1, 1, s - 1, s - 1, fill="#111111", outline="#000000")
+        self.create_oval(inset, inset, s - inset, s - inset,
+                         fill="#e9dfb8" if self._pressed else "#fbf3d0", outline="#c9bf98")
+
+
+class Bracket(tk.Canvas):
+    """A panel legend drawn as a bracket: |‾‾‾‾ TEXT ‾‾‾‾| spanning a group of controls."""
+
+    def __init__(self, parent: tk.Misc, width: int, text: str = "", background: str = "#3e4452",
+                 ink: str = "#f2f2f2", height: int = 16, font=("Arial", 8, "bold")) -> None:
+        super().__init__(parent, width=width, height=height, highlightthickness=0,
+                         background=background)
+        y = height // 2 + 1
+        left, right = 3, width - 3
+        if text:
+            label = self.create_text(width / 2, y, text=text, fill=ink, font=font)
+            x0, _, x1, _ = self.bbox(label)
+            self.create_line(left, y, x0 - 4, y, fill=ink)
+            self.create_line(x1 + 4, y, right, y, fill=ink)
+        else:
+            self.create_line(left, y, right, y, fill=ink)
+        self.create_line(left, y, left, height, fill=ink)
+        self.create_line(right, y, right, height, fill=ink)
