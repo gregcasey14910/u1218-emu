@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "u1218"
+version = "0.1.0"
+description = "Emulator of the US Navy UNIVAC 1218 (CP-789) computer, with a Tkinter panel and BASIC"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Greg Casey" }]
+license = "MIT"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5", "openpyxl>=3.1"]
+
+[project.scripts]
+u1218 = "u1218.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
